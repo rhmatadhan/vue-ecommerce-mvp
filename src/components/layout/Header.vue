@@ -84,20 +84,19 @@ const handleSearchSubmit = () => {
 
       <!-- Right Actions (Cart & Mobile Hamburger) -->
       <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
-        <RouterLink
-          to="/cart"
-          @click="closeMobileMenu"
-          class="relative p-2 text-gray-700 hover:text-[#7047EB] hover:bg-purple-50 rounded-full transition"
+        <button
+          @click="cartStore.openCart()"
+          class="relative p-2 text-gray-700 hover:text-[#7047EB] hover:bg-purple-50 rounded-full transition cursor-pointer"
           title="Shopping Cart"
         >
           <ShoppingCart class="w-6 h-6" />
           <span
             v-if="cartStore.totalItems > 0"
-            class="absolute -top-1 -right-1 bg-[#7047EB] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-white shadow-xs"
+            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-white shadow-xs"
           >
             {{ cartStore.totalItems }}
           </span>
-        </RouterLink>
+        </button>
 
         <!-- Mobile Hamburger Button -->
         <button
