@@ -47,3 +47,10 @@ export const deleteCartApi = async (cartId) => {
   const response = await axios.delete(`${BASE_URL}/carts/${cartId}`)
   return response.data
 }
+
+// User API endpoints
+export const getUserProfile = async (userId = 1) => {
+  const response = await axios.get(`${BASE_URL}/users/${userId}`)
+  return response.data
+}
+
