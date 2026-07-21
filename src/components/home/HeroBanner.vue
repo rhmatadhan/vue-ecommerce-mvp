@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
-import { Star, ShoppingCart, ChevronLeft, ChevronRight, Sparkles } from 'lucide-vue-next'
+import { RouterLink } from 'vue-router'
+import { Star, ShoppingCart, ChevronLeft, ChevronRight, Sparkles, ArrowRight } from 'lucide-vue-next'
 import { useCartStore } from '../../stores/cartStore'
 
 const props = defineProps({
@@ -73,8 +74,14 @@ const setSlide = (index) => {
   currentIndex.value = index
 }
 
-const handleAddToCart = (product) => {
-  cartStore.addToCart(product)
+const handleAddToCart = (product, event) => {
+  if (event) {
+    event.preventDefault()
+    event.stopPropagation()
+  }
+  if (product) {
+    cartStore.addToCart(product)
+  }
 }
 
 onMounted(() => {
@@ -109,11 +116,14 @@ onUnmounted(() => {
       </p>
 
       <div class="mt-6 flex items-center justify-center lg:justify-start space-x-4">
-        <button
-          class="bg-white text-[#7047EB] font-bold text-sm px-6 py-3 rounded-full shadow-md hover:shadow-xl hover:bg-purple-50 transition-all duration-200 transform hover:-translate-y-0.5 cursor-pointer"
+        <RouterLink
+          v-if="currentProduct"
+          :to="`/product/${currentProduct.id}`"
+          class="inline-flex items-center space-x-2 bg-white text-[#7047EB] font-bold text-sm px-6 py-3 rounded-full shadow-md hover:shadow-xl hover:bg-purple-50 transition-all duration-200 transform hover:-translate-y-0.5 cursor-pointer"
         >
-          Shop Now
-        </button>
+          <span>Shop Now</span>
+          <ArrowRight class="w-4 h-4" />
+        </RouterLink>
       </div>
     </div>
 
@@ -127,8 +137,13 @@ onUnmounted(() => {
           <Transition name="fade-slide" mode="out-in">
             <div :key="currentProduct?.id || currentIndex" class="flex flex-col items-center">
               
-              <!-- Image Container -->
-              <div class="w-full h-44 sm:h-48 bg-white/90 rounded-xl p-4 flex items-center justify-center shadow-inner relative group">
+              <!-- Image Container (Clickable Link to Product Detail) -->
+              <RouterLink
+                v-if="currentProduct"
+                :to="`/product/${currentProduct.id}`"
+                class="w-full h-44 sm:h-48 bg-white/90 rounded-xl p-4 flex items-center justify-center shadow-inner relative group cursor-pointer"
+                title="Lihat Detail Produk"
+              >
                 <img
                   :src="currentProduct?.image"
                   :alt="currentProduct?.title"
@@ -137,16 +152,20 @@ onUnmounted(() => {
 
                 <!-- Quick Add to Cart Button -->
                 <button
-                  @click="handleAddToCart(currentProduct)"
-                  class="absolute bottom-2.5 right-2.5 bg-[#7047EB] text-white p-2.5 rounded-full shadow-md hover:bg-[#5b36cb] transition-transform duration-200 hover:scale-110 cursor-pointer flex items-center justify-center"
+                  @click.prevent.stop="handleAddToCart(currentProduct, $event)"
+                  class="absolute bottom-2.5 right-2.5 bg-[#7047EB] text-white p-2.5 rounded-full shadow-md hover:bg-[#5b36cb] transition-transform duration-200 hover:scale-110 cursor-pointer flex items-center justify-center z-10"
                   title="Add to Cart"
                 >
                   <ShoppingCart class="w-4 h-4" />
                 </button>
-              </div>
+              </RouterLink>
 
-              <!-- Product Info -->
-              <div class="w-full mt-4 text-left">
+              <!-- Product Info (Clickable Link to Product Detail) -->
+              <RouterLink
+                v-if="currentProduct"
+                :to="`/product/${currentProduct.id}`"
+                class="w-full mt-4 text-left block group/info cursor-pointer"
+              >
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-semibold uppercase tracking-wider text-purple-200">
                     {{ currentProduct?.category || 'Trending' }}
@@ -157,7 +176,7 @@ onUnmounted(() => {
                   </div>
                 </div>
 
-                <h3 class="text-sm font-semibold text-white line-clamp-1 mt-1">
+                <h3 class="text-sm font-semibold text-white line-clamp-1 mt-1 group-hover/info:underline">
                   {{ currentProduct?.title }}
                 </h3>
 
@@ -165,11 +184,12 @@ onUnmounted(() => {
                   <span class="text-lg font-extrabold text-white">
                     ${{ typeof currentProduct?.price === 'number' ? currentProduct.price.toFixed(2) : currentProduct?.price }}
                   </span>
-                  <span class="text-xs bg-white/20 px-2 py-0.5 rounded-md font-medium text-purple-100">
-                    Featured
+                  <span class="text-xs bg-white/20 group-hover/info:bg-white/35 px-2.5 py-1 rounded-md font-medium text-purple-100 transition-colors flex items-center space-x-1">
+                    <span>Lihat Detail</span>
+                    <ArrowRight class="w-3 h-3" />
                   </span>
                 </div>
-              </div>
+              </RouterLink>
             </div>
           </Transition>
 
