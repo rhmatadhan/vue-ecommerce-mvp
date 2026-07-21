@@ -1,7 +1,15 @@
 <script setup>
+import { onMounted } from 'vue'
 import { RouterView } from 'vue-router'
 import Header from './components/layout/Header.vue'
 import CartDrawer from './components/cart/CartDrawer.vue'
+import { useCartStore } from './stores/cartStore'
+
+const cartStore = useCartStore()
+
+onMounted(() => {
+  cartStore.fetchInitialCart()
+})
 </script>
 
 <template>
